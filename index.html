@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="vue.js"></script>
+    <style type="text/css">
+        [v-cloak] {display: none}
+        * {margin: 0; padding: 0; color: #6c6c6c;}
+        #container {width: 580px; background: #eeeeee; margin: 0 auto; padding: 30px 150px 100px; position: relative;}
+        td, th {width: 150px; text-align: center; border: 1px solid lightgray; height: 40px;}
+        input {width: 600px; height: 40px; border-radius: 5px; border: 1px solid lightgray; margin: 15px 0 30px 0; text-indent: 1em; font-size: 16px;}
+        table {border-collapse: collapse;}
+        .cleanAll {background: #c5000e; width: 200px; height: 30px;}
+        h3 {margin: 30px 0 30px 0;color:orange;border-bottom: 1px solid gray;padding-bottom: 20px;font-size: 28px;}
+        button {width: 100px; height: 25px; background: #428bca; border: 1px solid lightgray; border-radius: 5px; color: white;}
+        .add {width: 50px; height: 50px; font-size: 50px; background: transparent; border: none; color: lightgray; text-align: center; text-shadow: 0 0 3px gray;padding-bottom: 20px}
+        #hidden {width: 500px; height: 200px; background: black; font-size: 40px; color: #333; position: absolute; top: 0; left: 0; right: 0; bottom: 0; margin: auto; border-radius: 5px; border: 1px solid gray; background: lightgray; text-align: center; padding-top: 100px;}
+        #hidden button {margin-top: 80px; width: 100px; height: 30px;}
+        .ac {background: lightgray}
+    </style>
+
+</head>
+<body>
+<div id="container" v-cloak>
+   <h3>提醒事项</h3>
+    <div class="add" v-on:click="fn">{{ txt }}</div>
+    <div class="wrap" v-show="bol">
+        <form>
+            <label>代办日期</label><br/>
+            <input type="text" placeholder="输入代办日期" v-model="date"><br/>
+            <label>代办事项描述</label><br/>
+            <input type="text" placeholder="输入内容" v-model="des">
+        </form>
+        <input type="submit" value="提交" v-on:click="add()">
+        <input type="reset" value="重置" v-on:click="clear()" >
+    </div>
+    <p>代办事项列表</p>
+    <table>
+        <thead>
+            <tr>
+                <th>序号</th>
+                <th>代办日期</th>
+                <th>事项描述</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!--<tr v-for="(val,i) in arr" v-bind:class="{ac:val.isAc}" v-on:click="change(i)">-->
+            <tr v-for="(val,i) in arr" v-bind:class="{ac:val.isAc}" v-on:click="val.isAc=!val.isAc">
+                <td>{{ i+1 }}</td>
+                <td>{{ val.data }}</td>
+                <td>{{ val.des }}</td>
+                <td><button v-on:click.stop="remove(i)">删除</button></td>
+            </tr>
+            <tr v-show="arr.length==0">
+                <td colspan="4">暂无数据</td>
+            </tr>
+            <tr v-show="arr.length!=0">
+                <td colspan="4"><button class="cleanAll" v-on:click="clearAll">删除全部</button></td>
+            </tr>
+        </tbody>
+    </table>
+    <div id="hidden" v-show=bol2>
+        确认删除吗？
+        <br/>
+        <button v-on:click='sure'>确认</button>
+        <button v-on:click='cancel'>取消</button>
+    </div>
+</div>
+</body>
+</html>
+<script>
+    var vm=new Vue({
+        el:'#container',
+        data:{
+            arr:[
+                {data:'0101',des:'11111111',isAc:false},
+                {data:'0202',des:'222222222',isAc:false}
+            ],
+            bol:false,
+            txt:'+',
+            date:'',
+            des:'',
+            bol2:false
+            //变量来记录tr的状态
+
+        },
+        methods:{
+            fn:function(){
+                this.bol=!this.bol;
+                this.txt = this.txt == '+' ? "-" : "+"
+            },
+            add:function(){
+                this.arr.push({data:this.date,des:this.des,isAc:false});
+                this.date='';
+                this.des='';
+            },
+            clear:function(){
+                this.date='';
+                this.des='';
+            },
+            clearAll:function(){
+                this.bol2=true;
+            },
+            remove:function(i){
+                this.arr.splice(i,1);
+            },
+            sure:function(){
+                this.arr=[];
+                this.bol2=false;
+            },
+            cancel:function(){
+                this.bol2=false;
+            },
+            change:function(a){
+                this.arr[a].isAc=!this.arr[a].isAc
+            }
+        }
+    });
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
